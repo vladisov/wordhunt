@@ -1,9 +1,9 @@
 import React, { useContext, useState, useEffect } from "react";
 import { View, Text, FlatList, StyleSheet } from "react-native";
 import { Context } from "../context/WordContext";
-import { AntDesign } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import CreateList from "../components/CreateList";
+import ListItem from "../components/ListItem";
 
 const ListsScreen = ({ navigation }) => {
   const { state, selectList } = useContext(Context);
@@ -28,30 +28,19 @@ const ListsScreen = ({ navigation }) => {
 
       <FlatList
         data={listNames}
+        contentContainerStyle={{ flexGrow: 1 }}
         keyExtractor={(name) => {
           return name;
         }}
+        style={styles.list}
         renderItem={({ item }) => {
           return (
-            <View style={styles.itemLayout}>
-              <Text style={styles.itemText}>{item}</Text>
-              {state.activeList === item ? (
-                <View style={styles.iconLayout}>
-                  <TouchableOpacity style={styles.itemButton}>
-                    <AntDesign name="heart" size={19} color="black" />
-                  </TouchableOpacity>
-                </View>
-              ) : (
-                <View style={styles.iconLayout}>
-                  <TouchableOpacity
-                    style={styles.itemButton}
-                    onPress={() => selectList(item)}
-                  >
-                    <AntDesign name="hearto" size={18} color="black" />
-                  </TouchableOpacity>
-                </View>
-              )}
-            </View>
+            <ListItem
+              item={item}
+              state={state}
+              selectList={selectList}
+              openDetails={() => navigation.navigate("WordsList", { id: item })}
+            />
           );
         }}
       />
@@ -63,6 +52,7 @@ const styles = StyleSheet.create({
   layout: {
     justifyContent: "center",
     marginTop: 10,
+    flex: 1,
   },
   newListLayout: {
     justifyContent: "center",
@@ -75,31 +65,11 @@ const styles = StyleSheet.create({
     margin: 5,
     borderStyle: "dashed",
   },
-  itemLayout: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignSelf: "center",
-    borderWidth: 1,
-    borderColor: "black",
-    width: 300,
-    height: 40,
-    borderRadius: 2,
-    margin: 5,
-  },
-  itemText: {
-    alignSelf: "center",
-  },
   newList: {
     alignSelf: "center",
   },
-  iconLayout: {
-    flexDirection: "row",
-    alignSelf: "center",
-    position: "absolute",
-    marginLeft: 300,
-  },
-  itemButton: {
-    marginLeft: 260,
+  list: {
+    // flex: 1,
   },
 });
 

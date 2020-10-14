@@ -64,8 +64,14 @@ const App = () => {
             },
           })}
           tabBarOptions={{
-            activeTintColor: "tomato",
-            inactiveTintColor: "gray",
+            activeTintColor: "black",
+            inactiveTintColor: "#666666",
+            // activeBackgroundColor: "#fdedb5",
+            // inactiveBackgroundColor: "#fdedb5",
+            style: {
+              // borderTopColor: "black"
+              borderTopWidth: 0
+            }
           }}
         >
           <Tab.Screen name="Translate" component={TranslateStackScreen} />

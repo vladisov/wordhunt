@@ -50,26 +50,29 @@ const ListsScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   layout: {
+    alignItems: "center",
+    backgroundColor: "#FDE184",
     justifyContent: "center",
-    marginTop: 10,
     flex: 1,
   },
   newListLayout: {
     justifyContent: "center",
     alignSelf: "center",
     borderWidth: 1,
-    borderColor: "gray",
-    width: 300,
-    height: 40,
-    borderRadius: 2,
-    margin: 5,
+    borderColor: "black",
+    width: "90%",
+    height: 50,
+    marginTop: 15,
+    marginBottom: 10,
     borderStyle: "dashed",
   },
   newList: {
     alignSelf: "center",
+    fontSize: 16,
+    color: "black",
   },
   list: {
-    // flex: 1,
+    width: "100%",
   },
 });
 

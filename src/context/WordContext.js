@@ -94,12 +94,18 @@ export const { Context, Provider } = createDataContext(
   wordReducer,
   { addWord, deleteWord, selectList, createList, deleteWord },
   {
-    activeList: "default",
+    activeList: "Fargo",
     lists: {
-      default: {
-        words: [{ from: "from", to: "to" }],
+      Fargo: {
+        words: [
+          { from: "from", to: "to" },
+          { from: "long word", to: "длинное слово" },
+          { from: "word", to: "слово" },
+          { from: "ass", to: "жопа" },
+          { from: "very  loasndanjsdnajsdn", to: "щфылвфзщывлфзщылв" },
+        ],
       },
-      testList: {
+      GoodPlace: {
         words: [],
       },
     },

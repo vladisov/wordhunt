@@ -6,73 +6,112 @@ import {
   TouchableOpacity,
 } from "react-native-gesture-handler";
 import LangSelect from "../components/LangSelect";
+import DictionaryTranslation from "../components/DictionaryTranslation";
 import useTranslation from "../hooks/useTranslation";
 import { Context } from "../context/WordContext";
-import { LinearGradient } from "expo-linear-gradient";
+import { MaterialIcons } from "@expo/vector-icons";
 
 const TranslateScreen = ({ initialValues, navigation }) => {
   const [word, setWord] = useState("");
   const [
     getTranslation,
-    translation,
-    setTranslation,
+    getDictionaryTranslation,
+    dictionaryTranslation,
     errorMessage,
   ] = useTranslation();
   const [langFrom, setLangFrom] = useState(initialValues.langFrom);
   const [langTo, setLangTo] = useState(initialValues.langTo);
   const { state, addWord } = useContext(Context);
+  const [activeTranslation, setActiveTranslation] = useState(false);
 
-  navigation.setOptions({ title: `Active list: ${state.activeList}` });
+  navigation.setOptions({
+    title: `ACTIVE LIST: ${state.activeList.toUpperCase()}`,
+  });
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
-      // do something
-      setWord("");
-      setTranslation("");
+      cleanValues();
     });
 
     return unsubscribe;
   }, [navigation]);
 
+  const isArrow = () => {
+    return !activeTranslation;
+  };
+
+  const cleanValues = () => {
+    setWord("");
+    setActiveTranslation(false);
+    getTranslation("", langFrom.value, langTo.value, addWord); //todo fix
+  };
+
+  // const old = (
+  //     <View>
+  //       <LangSelect
+  //         langFrom={langFrom}
+  //         langTo={langTo}
+  //         onFromLanguageChange={(langFrom) => setLangFrom(langFrom)}
+  //         onToLanguageChange={(langTo) => setLangTo(langTo)}
+  //       />
+  //     </View>
+  // );
+
   return (
     <View style={styles.layout}>
-      <View>
-        <LangSelect
-          langFrom={langFrom}
-          langTo={langTo}
-          onFromLanguageChange={(langFrom) => setLangFrom(langFrom)}
-          onToLanguageChange={(langTo) => setLangTo(langTo)}
-        />
-      </View>
-      <View>
+      <View style={{ height: 120, width: "100%" }}>
         <TextInput
+          selectionColor="black"
           value={word}
           multiline
           autoCapitalize="none"
           autoCorrect={false}
           style={styles.input}
           onChangeText={(text) => {
+            console.log("on change " + text);
+            getTranslation(text, langFrom.value, langTo.value, addWord);
             setWord(text);
+            setActiveTranslation(false);
           }}
         />
+        <View style={styles.arrow}>
+          {isArrow() ? (
+            <TouchableOpacity
+              onPress={() => {
+                {
+                  // getTranslation(word, langFrom.value, langTo.value, addWord);
+                  getDictionaryTranslation(
+                    word,
+                    langFrom.value,
+                    langTo.value,
+                    addWord
+                  );
+                  setActiveTranslation(true);
+                }
+              }}
+            >
+              <MaterialIcons name="navigate-next" size={46} color="#4c4c4c" />
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity onPress={cleanValues}>
+              <MaterialIcons name="close" size={46} color="#4c4c4c" />
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
-      <TouchableOpacity
-        onPress={() => {
-          getTranslation(word, langFrom.value, langTo.value, addWord);
-        }}
-        style={styles.buttonContainer}
-      >
-        <Text style={styles.button}>Translate</Text>
-      </TouchableOpacity>
-      {/* <Button style={styles.button} title="Translate" /> */}
-      <View>
-        <Text autoCapitalize="none" style={styles.output}>
-          {translation ? translation.toLocaleLowerCase() : null}
-        </Text>
-      </View>
-      <View>{errorMessage ? <Text>{errorMessage}</Text> : null}</View>
+
+      {Object.keys(dictionaryTranslation).length > 0 ? (
+        <View style={styles.output}>
+          <DictionaryTranslation translation={dictionaryTranslation} />
+          <Text autoCapitalize="none" style={styles.outputText}></Text>
+        </View>
+      ) : (
+        <View style={styles.emptyView}></View>
+      )}
+
       <View style={styles.wordList}>
         <FlatList
+          showsVerticalScrollIndicator={false}
           data={state.lists[state.activeList].words}
           keyExtractor={({ from }) => {
             return from;
@@ -80,9 +119,8 @@ const TranslateScreen = ({ initialValues, navigation }) => {
           renderItem={({ item }) => {
             return (
               <View style={styles.wordItem}>
-                <Text style={common.text}>
-                  {item.from} - {item.to}
-                </Text>
+                <Text style={common.text}>{item.from}</Text>
+                <Text>{item.to}</Text>
               </View>
             );
           }}
@@ -107,104 +145,93 @@ TranslateScreen.defaultProps = {
 
 const common = StyleSheet.create({
   baseCard: {
-    // backgroundColor: "#e5e5e5",
-    // shadowColor: "#000",
-    // shadowOffset: {
-    //   width: 0,
-    //   height: 1,
-    // },
-    // shadowOpacity: 0.3,
-    // shadowRadius: 1.5,
-    // elevation: 3,
-    // borderWidth: 0.5,
-    // borderColor: "#413C58",
-    // borderRadius: 3,
-    // color: "#333333",
-
-    backgroundColor: "#fbfbfb",
+    backgroundColor: "#fff",
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 1.5,
     },
     shadowOpacity: 0.25,
     shadowRadius: 2.5,
-    elevation: 8,
+    elevation: 4,
     borderWidth: 0.1,
-    borderColor: "#413C58",
-    borderRadius: 1,
-    color: "#333333",
+    borderColor: "black",
+    borderRadius: 20,
+    color: "black",
   },
   text: {
-    color: "#333333",
-    fontSize: 15,
+    color: "black",
+    fontSize: 18,
+    fontWeight: "500",
   },
 });
 const styles = StyleSheet.create({
   layout: {
-    justifyContent: "center",
+    justifyContent: "flex-start",
     alignItems: "center",
     flex: 1,
-    backgroundColor: "rgb(253,225,132)",
+    backgroundColor: "#FDE184",
+  },
+  emptyView: {
+    height: 10,
   },
   input: {
-    padding: 5,
-    minHeight: 70,
-    width: 300,
-    alignSelf: "center",
-    fontSize: 15,
-    ...common.baseCard,
+    paddingLeft: 10,
+    paddingTop: 30,
+    flex: 1,
+    fontSize: 36,
+    color: "black",
+    width: "100%",
+    height: "100%",
+    fontWeight: "600",
+    backgroundColor: "#FDE184",
+  },
+  arrow: {
+    position: "absolute",
+    right: 15,
+    top: 33,
   },
   output: {
-    padding: 5,
+    padding: 20,
     marginTop: 15,
-    height: 150,
-    width: 300,
-    fontSize: 15,
-
+    marginBottom: 10,
+    minHeight: 100,
+    width: "90%",
+    alignSelf: "center",
     ...common.baseCard,
   },
+  outputText: {
+    fontSize: 18,
+    fontWeight: "500",
+  },
   wordList: {
-    marginTop: 15,
-    marginBottom: 15,
-    alignSelf: "stretch",
+    borderTopWidth: 0.5,
+    borderBottomWidth: 0.5,
+    borderTopColor: "#e3ca76",
+    borderBottomColor: "#e3ca76",
+    marginBottom: 2,
+    alignSelf: "center",
     borderRadius: 2,
     flex: 1,
+    width: "97%",
   },
   wordItem: {
-    height: 40,
-    alignItems: "center",
     alignSelf: "center",
     justifyContent: "center",
     flex: 1,
-    marginTop: 5,
-    marginBottom: 5,
-    width: "95%",
+    marginTop: 4,
+    padding: 15,
+    width: "97%",
+    backgroundColor: "#fdedb5",
 
-    ...common.baseCard,
-  },
-  button: {
-    fontSize: 15,
-    fontWeight: "500",
-    color: "#ffffff",
-  },
-  buttonContainer: {
-    justifyContent: "center",
-    alignItems: "center",
-    width: 100,
-    height: 40,
-    marginTop: 15,
-    backgroundColor: "tomato",
-    borderRadius: 5,
-
-    // shadowColor: "#000",
-    // shadowOffset: {
-    //   width: 0,
-    //   height: 4,
-    // },
-    // shadowOpacity: 0.30,
-    // shadowRadius: 4.65,
-    // elevation: 8,
+    shadowColor: "#b19d5c",
+    shadowOffset: {
+      width: 0,
+      height: 0.5,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 1.3,
+    elevation: 4,
   },
 });
 

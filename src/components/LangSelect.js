@@ -2,9 +2,19 @@ import React from "react";
 import { View, StyleSheet, Text, Button } from "react-native";
 import useLanguages from "../hooks/useLanguages";
 import { ModalSelectList } from "react-native-modal-select-list";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
-const openModal = () => modalRef.show();
-const saveModalRef = (ref) => (modalRef = ref);
+let fromModal;
+let toModal;
+const openModal = (from) => {
+  if (from) {
+    fromModal.show();
+  } else {
+    toModal.show();
+  }
+};
+const fromModalRef = (ref) => (fromModal = ref);
+const toModalRef = (ref) => (toModal = ref);
 
 const LangSelect = ({
   langFrom,
@@ -16,7 +26,10 @@ const LangSelect = ({
 
   const onSelectedOption = (value, isFromValue) => {
     const selected = languages.find((lang) => lang.value === value);
+    console.log(isFromValue);
+
     if (isFromValue) {
+      console.log("change from");
       onFromLanguageChange(selected);
     } else {
       onToLanguageChange(selected);
@@ -25,23 +38,34 @@ const LangSelect = ({
 
   return (
     <View style={styles.layout}>
-      <View style={styles.fromLang}>
-        <Button onPress={() => openModal()} title={langFrom.label} />
-        <ModalSelectList
-          ref={saveModalRef}
-          placeholder={"Choose language..."}
-          closeButtonText={"Close"}
-          options={languages}
-          onSelectedOption={(value) => onSelectedOption(value, false)}
-          disableTextSearch={false}
-          numberOfLines={3}
-        />
+      <View>
+        <TouchableOpacity
+          style={styles.langLayout}
+          onPress={() => openModal(true)}
+        >
+          <Text style={styles.langText}>{langFrom.label}</Text>
+          <ModalSelectList
+            ref={fromModalRef}
+            placeholder={"Choose language..."}
+            closeButtonText={"Close"}
+            options={languages}
+            onSelectedOption={(value) => onSelectedOption(value, true)}
+            disableTextSearch={false}
+            numberOfLines={3}
+          />
+        </TouchableOpacity>
       </View>
-      <Text>{"->"}</Text>
-      <View style={styles.toLang}>
-        <Button onPress={() => openModal()} title={langTo.label} />
+      <Text>{"<->"}</Text>
+      <View>
+        <TouchableOpacity
+          style={styles.langLayout}
+          onPress={() => openModal(false)}
+        >
+          <Text style={styles.langText}>{langTo.label}</Text>
+        </TouchableOpacity>
+        {/* <Button } title={langTo.label} /> */}
         <ModalSelectList
-          ref={saveModalRef}
+          ref={toModalRef}
           placeholder={"Choose language..."}
           closeButtonText={"Close"}
           options={languages}
@@ -56,16 +80,23 @@ const LangSelect = ({
 
 const styles = StyleSheet.create({
   layout: {
-    marginTop: 20,
+    marginTop: 15,
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
   },
-  fromLang: {
+  langLayout: {
     margin: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    width: 100,
+    height: 25,
+    marginTop: 15,
+    backgroundColor: "tomato",
+    borderRadius: 5,
   },
-  toLang: {
-    margin: 10,
+  langText: {
+    color: "#ffffff",
   },
 });
 

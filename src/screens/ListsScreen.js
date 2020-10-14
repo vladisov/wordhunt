@@ -1,9 +1,9 @@
 import React, { useContext, useState, useEffect } from "react";
 import { View, Text, FlatList, StyleSheet } from "react-native";
 import { Context } from "../context/WordContext";
-import { AntDesign } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import CreateList from "../components/CreateList";
+import ListItem from "../components/ListItem";
 
 const ListsScreen = ({ navigation }) => {
   const { state, selectList } = useContext(Context);
@@ -28,30 +28,19 @@ const ListsScreen = ({ navigation }) => {
 
       <FlatList
         data={listNames}
+        contentContainerStyle={{ flexGrow: 1 }}
         keyExtractor={(name) => {
           return name;
         }}
+        style={styles.list}
         renderItem={({ item }) => {
           return (
-            <View style={styles.itemLayout}>
-              <Text style={styles.itemText}>{item}</Text>
-              {state.activeList === item ? (
-                <View style={styles.iconLayout}>
-                  <TouchableOpacity style={styles.itemButton}>
-                    <AntDesign name="heart" size={19} color="black" />
-                  </TouchableOpacity>
-                </View>
-              ) : (
-                <View style={styles.iconLayout}>
-                  <TouchableOpacity
-                    style={styles.itemButton}
-                    onPress={() => selectList(item)}
-                  >
-                    <AntDesign name="hearto" size={18} color="black" />
-                  </TouchableOpacity>
-                </View>
-              )}
-            </View>
+            <ListItem
+              item={item}
+              state={state}
+              selectList={selectList}
+              openDetails={() => navigation.navigate("WordsList", { id: item })}
+            />
           );
         }}
       />
@@ -61,45 +50,29 @@ const ListsScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   layout: {
+    alignItems: "center",
+    backgroundColor: "#FDE184",
     justifyContent: "center",
-    marginTop: 10,
+    flex: 1,
   },
   newListLayout: {
     justifyContent: "center",
     alignSelf: "center",
     borderWidth: 1,
-    borderColor: "gray",
-    width: 300,
-    height: 40,
-    borderRadius: 2,
-    margin: 5,
-    borderStyle: "dashed",
-  },
-  itemLayout: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignSelf: "center",
-    borderWidth: 1,
     borderColor: "black",
-    width: 300,
-    height: 40,
-    borderRadius: 2,
-    margin: 5,
-  },
-  itemText: {
-    alignSelf: "center",
+    width: "90%",
+    height: 50,
+    marginTop: 15,
+    marginBottom: 10,
+    borderStyle: "dashed",
   },
   newList: {
     alignSelf: "center",
+    fontSize: 16,
+    color: "black",
   },
-  iconLayout: {
-    flexDirection: "row",
-    alignSelf: "center",
-    position: "absolute",
-    marginLeft: 300,
-  },
-  itemButton: {
-    marginLeft: 260,
+  list: {
+    width: "100%",
   },
 });
 

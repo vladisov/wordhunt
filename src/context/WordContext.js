@@ -39,9 +39,14 @@ const wordReducer = (state, action) => {
     case "add_word":
       return addWordToActiveList(state, action.payload);
     case "delete_word":
-      return state.filter((word) => {
-        return word.id !== action.payload;
+      const { id, word } = action.payload;
+      const { lists } = state;
+      const words = lists[id].words;
+      const filtered = words.filter((curr) => {
+        return curr.from !== word.from;
       });
+      lists[id].words = filtered;
+      return { ...state, lists: lists };
     case "select_list":
       return updateActiveList(state, action.payload);
     case "create_list": {
@@ -80,21 +85,27 @@ const addWord = (dispatch) => {
 };
 
 const deleteWord = (dispatch) => {
-  return (id) => {
-    dispatch({ type: "delete_word", payload: id });
+  return (id, word) => {
+    dispatch({ type: "delete_word", payload: { id, word } });
   };
 };
 
 export const { Context, Provider } = createDataContext(
   wordReducer,
-  { addWord, deleteWord, selectList, createList },
+  { addWord, deleteWord, selectList, createList, deleteWord },
   {
-    activeList: "default",
+    activeList: "Fargo",
     lists: {
-      default: {
-        words: [{ from: "from", to: "to" }],
+      Fargo: {
+        words: [
+          { from: "from", to: "to" },
+          { from: "long word", to: "длинное слово" },
+          { from: "word", to: "слово" },
+          { from: "ass", to: "жопа" },
+          { from: "very  loasndanjsdnajsdn", to: "щфылвфзщывлфзщылв" },
+        ],
       },
-      testList: {
+      GoodPlace: {
         words: [],
       },
     },

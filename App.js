@@ -7,6 +7,7 @@ import RepeatScreen from "./src/screens/RepeatScreen";
 import TranslateScreen from "./src/screens/TranslateScreen";
 import { Provider as WordProvider } from "./src/context/WordContext";
 import { Ionicons, FontAwesome } from "@expo/vector-icons";
+import WordListScreen from "./src/screens/WordListScreen";
 
 const ListsStack = createStackNavigator();
 const TranslateStack = createStackNavigator();
@@ -16,6 +17,7 @@ const ListsStackScreen = () => {
   return (
     <ListsStack.Navigator>
       <ListsStack.Screen name="Lists" component={ListsScreen} />
+      <ListsStack.Screen name="WordsList" component={WordListScreen} />
     </ListsStack.Navigator>
   );
 };
@@ -62,8 +64,14 @@ const App = () => {
             },
           })}
           tabBarOptions={{
-            activeTintColor: "tomato",
-            inactiveTintColor: "gray",
+            activeTintColor: "black",
+            inactiveTintColor: "#666666",
+            // activeBackgroundColor: "#fdedb5",
+            // inactiveBackgroundColor: "#fdedb5",
+            style: {
+              // borderTopColor: "black"
+              borderTopWidth: 0
+            }
           }}
         >
           <Tab.Screen name="Translate" component={TranslateStackScreen} />

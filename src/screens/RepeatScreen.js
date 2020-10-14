@@ -37,21 +37,38 @@ const RepeatScreen = ({ navigation }) => {
           </TouchableOpacity>
         </View>
       ) : null}
-      <Button title="Generate" onPress={() => setRandom(getRandom(state))} />
+      <View style={styles.buttonView}>
+        <TouchableOpacity onPress={() => setRandom(getRandom(state))}>
+          <Text style={styles.buttonText}>GENERATE</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   card: {
-    borderWidth: 1,
-    borderRadius: 3,
-    width: "80%",
-    height: "60%",
-    justifyContent: "center",
+    borderRadius: 15,
     alignItems: "center",
+    alignSelf: "center",
+    justifyContent: "center",
+    marginTop: "20%",
+    backgroundColor: "#fff",
+    shadowColor: "black",
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.5,
+    shadowRadius: 2.3,
+    elevation: 4,
+    flex: 3,
+    height: "20%",
+    width: "85%",
+
   },
   layout: {
+    backgroundColor: "#FDE184",
     justifyContent: "center",
     flex: 1,
     alignItems: "center",
@@ -59,10 +76,22 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 30,
   },
-  button: {
+  buttonView: {
     flex: 1,
+    marginTop: 20,
     alignItems: "center",
     justifyContent: "center",
+    // borderWidth: 1,
+    borderColor: "#b19d5c",
+    width: "85%",
+    height: 30,
+
+    borderRadius: 3,
+    // backgroundColor: "#fdedb5",
+  },
+  buttonText: {
+    fontWeight: "500",
+    fontSize: 18,
   },
 });
 
